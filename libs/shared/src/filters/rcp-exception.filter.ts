@@ -1,28 +1,28 @@
-import {ArgumentsHost, Catch, ExceptionFilter, Logger} from "@nestjs/common";
-import {RpcException} from "@nestjs/microservices";
-import {ResponseError} from "../utils/response-error";
-import {ZodError} from "zod";
-import {throwError} from "rxjs";
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from "@nestjs/common";
+import { ResponseError } from "../utils/response-error";
+import { ZodError } from "zod";
+import { throwError } from "rxjs";
 
-@Catch(RpcException)
-export class RpcExceptionFilter implements ExceptionFilter {
-
-    private readonly logger = new Logger(RpcException.name);
+@Catch()
+export class MSRpcExceptionFilter implements ExceptionFilter {
 
     catch(exception: any, host: ArgumentsHost)
     {
-        this.logger.error(`Exception caught: ${exception.message}`, exception.stack);
-
-        if (exception instanceof ResponseError) {
-            return throwError(() => new RpcException(exception.getResponse()));
+        if (
+            exception.constructor.name === "BadRequestException" ||
+            exception.constructor.name === "NotFoundException" ||
+            exception.constructor.name === "ForbiddenException" ||
+            exception.constructor.name === "UnauthorizedException"
+        ) {
+            console.log("RPC EXCEPTION: ", exception);
+            return throwError(() => exception.getResponse());
         }
 
-        if (exception instanceof ZodError) {
-            const responseError = new ResponseError(422, exception.errors);
-            return throwError(() => new RpcException(responseError.getResponse()));
+        if (exception.constructor.name === "ZodError") {
+            throw new HttpException(exception.message, 422)
         }
 
-        return throwError(() => new RpcException(exception.message));
+        return throwError(() => exception);
     }
 
 }
