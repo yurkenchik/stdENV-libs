@@ -32,9 +32,4 @@ export class UpdateUserInput {
     @Field()
     readonly age?: number;
 
-    @IsNotEmpty()
-    @IsEnum(RoleEnum)
-    @Field()
-    readonly role?: RoleEnum;
-
 }

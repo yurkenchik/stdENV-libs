@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne} from "typeorm";
 import { Field, ID, ObjectType } from "@nestjs/graphql";
-import {RoleEnum} from "../utils/role.enum";
+import {Role} from "./role.entity";
+import {UserStatusEnum} from "../utils/user-status.enum";
 
 @ObjectType()
 @Entity()
@@ -33,9 +34,21 @@ export class User {
     @Field()
     @Column({ type: "integer" })
     age!: number;
-    
+
     @Field()
-    @Column({ type: "enum", enum: RoleEnum, default: RoleEnum.STUDENT })
-    role!: RoleEnum;
+    @Column({ type: "boolean", default: false })
+    isBanned?: boolean;
+
+    @Field()
+    @Column({ type: "varchar", default: null })
+    banReason?: string;
+
+    @Field()
+    @Column({ type: "enum", default: UserStatusEnum.PENDING, enum: UserStatusEnum })
+    status?: UserStatusEnum;
+
+    @ManyToOne(() => Role, role => role.users)
+    @JoinColumn()
+    role?: Role
     
 }
