@@ -11,7 +11,12 @@ export class Role {
     @Field()
     id!: string;
 
-    @Column({ type: "enum", enum: RoleEnum, default: RoleEnum.STUDENT })
+    @Column({
+        type: "enum",
+        enum: RoleEnum,
+        default: RoleEnum.STUDENT,
+        unique: true
+    })
     @Field()
     role!: RoleEnum;
 
