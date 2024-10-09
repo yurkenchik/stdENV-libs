@@ -3,8 +3,7 @@ import {ArgumentsHost, Catch, ExceptionFilter} from "@nestjs/common";
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
 
-    catch(exception: any, host: ArgumentsHost)
-    {
+    catch(exception: any, host: ArgumentsHost) {
         const response = host.switchToHttp().getResponse();
 
         if (exception?.status && typeof exception?.status === "number") {

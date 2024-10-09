@@ -39,13 +39,25 @@ export class User {
     @Column({ type: "boolean", default: false })
     isBanned?: boolean;
 
-    @Field()
+    @Field( { nullable: true })
     @Column({ type: "varchar", default: null })
     banReason?: string;
 
     @Field()
     @Column({ type: "enum", default: UserStatusEnum.PENDING, enum: UserStatusEnum })
     status?: UserStatusEnum;
+
+    @Field()
+    @Column({ type: "boolean", default: false })
+    isAccountVerified?: boolean;
+
+    @Field({ nullable: true })
+    @Column({ type: "varchar", nullable: true, default: null })
+    verificationCode?: string;
+
+    @Field({ nullable: true })
+    @Column({ type: "varchar", nullable: true, default: null })
+    certificateLink?: string;
 
     @ManyToOne(() => Role, role => role.users)
     @JoinColumn()
